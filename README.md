@@ -30,8 +30,8 @@ A simple and elegant todo application built with React and Redux. This applicati
 1. **Clone the repository:**
 
    ```bash
-   git clone 
-   cd 
+   git clone https://github.com/navyamallidi/todoapp-.git
+   cd todoapp-
    npm install
    npm start
 =======

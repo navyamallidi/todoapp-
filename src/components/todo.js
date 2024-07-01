@@ -1,50 +1,62 @@
 import React, { useState } from "react";
 import "./todo.css";
-import { IoAddCircle } from "react-icons/io5";
+import TaskList from "./TaskList"; // Import the TaskList component
+import TaskInput from "./TaskInput"; // Import the TaskInput component
 import { useSelector, useDispatch } from "react-redux";
-import { addtodo, deletetodo, removetodo } from "../actions/index";
-import { IoCloseCircle } from "react-icons/io5";
+import { addtodo, removetodo, edittodo } from "../actions/index"; // Import Redux actions
+
 function Todo() {
-  const [input, setinput] = useState("");
+  // Local state to manage the input field value, editing status, and the id of the task being edited
+  const [input, setInput] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+  
+  // Access Redux dispatch function to send actions
   const dispatch = useDispatch();
+  // Access the list of tasks from the Redux state
   const list = useSelector((state) => state.todoReducer.list);
+
+  // Function to handle adding or editing a todo
+  const handleAddTodo = () => {
+    if (isEditing) {
+      // If in editing mode, dispatch the edit action
+      dispatch(edittodo(editId, input));
+      setIsEditing(false); // Reset editing status
+      setEditId(null); // Reset the edit id
+    } else {
+      // If not in editing mode, dispatch the add action
+      dispatch(addtodo(input));
+    }
+    setInput(""); // Clear the input field
+  };
+
+  // Function to handle initiating the editing of a todo
+  const handleEditTodo = (id, data) => {
+    setInput(data); // Set the input field with the current data of the todo
+    setIsEditing(true); // Set editing status to true
+    setEditId(id); // Set the edit id to the current todo's id
+  };
+
   return (
     <div className="main">
       <div className="sub">
         <h3>Plan Your Day</h3>
-        <p>enjoy your work by ticking of the tasks</p>
+        <p>Enjoy your work by ticking off the tasks</p>
         <div>
-          <input
-            placeholder="enter your task"
-            type="text"
-            className="inpt"
-            value={input}
-            onChange={(event) => setinput(event.target.value)}
-          />
-          <IoAddCircle
-            className="icon"
-            onClick={() => dispatch(addtodo(input), setinput(""))}
-          />
-        </div>
-
-        <div> 
-          {list.map((elem) => {
-            return (
-              <div key={elem.id} className="tasks">
-                <p className="data">{elem.data}</p>
-                <IoCloseCircle
-                className="icond"
-                  onClick={() => dispatch(deletetodo(elem.id))}
-                />
-              </div>
-            );
-          })}
+          {/* TaskInput component for entering new tasks or editing existing ones */}
+          <TaskInput input={input} setInput={setInput} handleAddTodo={handleAddTodo} />
         </div>
 
         <div>
-          <button 
-          className="button"
-          onClick={() => dispatch(removetodo())}>Remove all</button>
+          {/* TaskList component to display the list of tasks */}
+          <TaskList list={list} handleEditTodo={handleEditTodo} />
+        </div>
+
+        <div>
+          {/* Button to remove all tasks */}
+          <button className="button" onClick={() => dispatch(removetodo())}>
+            Remove All
+          </button>
         </div>
       </div>
     </div>

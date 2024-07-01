@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Todo Application
 
 A simple and elegant todo application built with React and Redux. This application allows users to add, edit, and delete tasks, as well as clear all tasks at once. 
